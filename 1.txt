@@ -1,1 +1,15 @@
+<<<<<<< HEAD
 sample for commits 
+=======
+Hello
+
+welcome to python
+
+
+session
+
+
+testing
+
+commits
+>>>>>>> f6d3fb0b05ce2721bfe22a8a47a70ab07bcee5eb
