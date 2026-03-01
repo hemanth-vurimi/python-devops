@@ -1,3 +1,3 @@
 Hello
 
-welcome to python
+welcome to merge conflicts
