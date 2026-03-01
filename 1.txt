@@ -1,9 +1,1 @@
-Hello
-
-welcome to python
-
-
-session
-
-
-testing
+sample for commits 
