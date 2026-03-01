@@ -1,6 +1,10 @@
 Hello
 
+<<<<<<< HEAD
+welcome to merge conflicts
+=======
 welcome to python
 
 
 session
+>>>>>>> b2c7abc338258f0e11e3c284a398c699016a1aa9
