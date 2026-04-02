@@ -1,0 +1,23 @@
+name: PR Check
+
+on:
+  pull_request:
+
+jobs:
+  call-repo-b:
+    uses: hemanth-vurimi/DevSecOps/.github/workflows/test.yaml@main
+
+  validate-stage:
+    runs-on: ubuntu-latest
+    needs: call-repo-b
+    steps:
+      - name: Check stage result
+        run: |
+          echo "Stage result: ${{ needs.call-repo-b.outputs.stage_result }}"
+
+          if [ "${{ needs.call-repo-b.outputs.stage_result }}" != "success" ]; then
+            echo "Stage failed → failing PR"
+            exit 1
+          else
+            echo "Stage passed"
+          fi
