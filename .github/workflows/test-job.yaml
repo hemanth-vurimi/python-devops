@@ -11,26 +11,35 @@ jobs:
       - name: Trigger Repo B Workflow
         run: |
           echo "Triggering Repo B workflow..."
-
           RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
             -X POST \
             -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/hemanth-vurimi/DevSecOps/dispatches \
             -d '{"event_type":"run-test"}')
-
           echo "HTTP Status: $RESPONSE"
           cat response.txt
 
-      - name: Wait for test-stage result
+      - name: Wait for test-stage result (max 2 mins)
         run: |
           echo "Waiting for test-stage job..."
 
           REPO="hemanth-vurimi/DevSecOps"
 
-          for i in {1..20}; do
+          START_TIME=$(date +%s)
+          TIMEOUT=120   # 2 minutes
 
-            echo "Attempt: $i"
+          while true; do
+
+            CURRENT_TIME=$(date +%s)
+            ELAPSED=$((CURRENT_TIME - START_TIME))
+
+            echo "Elapsed time: ${ELAPSED}s"
+
+            if [ $ELAPSED -ge $TIMEOUT ]; then
+              echo "❌ Timeout reached (2 minutes)"
+              exit 1
+            fi
 
             # Get latest workflow run ID
             RUN_ID=$(curl -s \
@@ -62,9 +71,6 @@ jobs:
               exit 1
             fi
 
-            echo "Still running... waiting"
+            echo "Still running... waiting 10s..."
             sleep 10
           done
-
-          echo "❌ Timeout waiting for test-stage"
-          exit 1
