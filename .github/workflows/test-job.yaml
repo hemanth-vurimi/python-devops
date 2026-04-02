@@ -12,10 +12,15 @@ jobs:
         run: |
           echo "Triggering Repo B workflow..."
 
-          curl -X POST \
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/hemanth-vurimi/DevSecOps/dispatches \
-            -d '{"event_type":"run-test"}'
+            -d '{"event_type":"run-test"}')
+
+          echo "HTTP Status: $RESPONSE"
+          cat response.txt
 
       - name: Wait for test-stage result
         run: |
@@ -29,6 +34,7 @@ jobs:
 
             # Get latest workflow run ID
             RUN_ID=$(curl -s \
+              -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
               https://api.github.com/repos/$REPO/actions/runs \
               | jq -r '.workflow_runs[0].id')
 
@@ -42,6 +48,7 @@ jobs:
 
             # Get test-stage job status
             JOB_STATUS=$(curl -s \
+              -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
               https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
               | jq -r '.jobs[] | select(.name=="test-stage") | .conclusion')
 
