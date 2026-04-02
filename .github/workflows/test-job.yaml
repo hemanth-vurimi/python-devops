@@ -1,4 +1,4 @@
-name: PR Check via Repo B
+name: PR Check via Repo B 
 
 on:
   pull_request:
